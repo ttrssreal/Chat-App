@@ -1,0 +1,34 @@
+{% extends 'room_layout.html' %}
+ 
+{% block content %}
+<h1 class="bg-primary">Room</h1>
+
+    <script src="/static/js/room.js"></script>
+
+    <div class="blended_grid">
+        <div class="pageHeader bg-primary">
+            <h1>Chatroom {{ room_number }}</h1>
+        </div>
+        <div class="currentUserList">
+            <ul>
+                <li>User</li>
+                <li>User</li>
+                <li>User</li>
+                <li>User</li>
+                <li>User</li>
+                <li>User</li>
+                <li>User</li>
+                <li>User</li>
+                <li>User</li>
+                <li>User</li>
+                <li>User</li>
+            </ul>
+        </div>
+        <div class="messages">
+
+        </div>
+        <div class="sendMessage">
+            <textarea name="" id="" cols="1" rows="1"></textarea>
+        </div>
+    </div>
+{% endblock %}

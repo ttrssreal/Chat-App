@@ -1,0 +1,71 @@
+body {
+  height: 100vh;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+body {
+  background-size: 100% auto;
+}
+.blended_grid {
+  display: block;
+  width: 900px;
+  overflow: auto;
+  margin: 30px auto 0 auto;
+}
+.pageHeader {
+  background-color: rgba(0, 0, 0, 0.5);
+  float: left;
+  /* clear: none; */
+  border: 1px solid;
+  height: 100px;
+  width: 900px;
+  text-align: center;
+  border-radius: 10px 10px 0px 0px;
+}
+.currentUserList {
+  background-color: rgb(62, 98, 255);
+  float: left;
+  /* clear: none; */
+  border: 1px solid;
+  height: 600px;
+  width: 200px;
+}
+.messages {
+  background-color: rgb(73, 106, 255);
+  float: left;
+  /* clear: none; */
+  border: 1px solid;
+  height: 600px;
+  width: 700px;
+}
+.sendMessage {
+  background-color: rgb(65, 163, 255);
+  float: left;
+  /* clear: none; */
+  border: 1px solid;
+  height: 100px;
+  width: 900px;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.currentUserList ul{
+  list-style-type: none;
+
+}
+
+.sendMessage textarea{
+  float: left;
+  resize: none;
+  height: 98px;
+  width: 898px;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.pageHeader h1{
+    text-align: center;
+    font-size: 70px;
+}
