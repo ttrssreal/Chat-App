@@ -1,23 +1,19 @@
-const socket = new WebSocket('ws://localhost:5000');
-
-socket.on("connected", () => {
-    alert("connected")
-});
-
-
-function updateChat() {
-    $.ajax({
-        type: "POST",
-        url: "/dostuff",
-        data: {'todo': 'update'},
-        dataType: "json",
-        success: data => {
-            alert(data);
-        }
-    });
-}
+const socketio = io();
 
 $(document).ready(() => {
-    // setInterval('updateChat()', 2000)
-    
+  socketio.on("message", data => {
+    $(".messages ul").append("<li>" + data.message + "</li>");
+    $(".messages").scrollTop($(".messages").prop("scrollHeight"));
+  });
+
+  socketio.on("new_user", data => {
+      $(".currentUserList ul").append("<li>" + data + "</li>");
+  });
+
+  $(".btn").click(() => {
+    socketio.emit("message", {
+      sender: "John",
+      message: $(".message_to_send").val(),
+    });
+  });
 });

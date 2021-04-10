@@ -13,7 +13,8 @@
     <title>Document</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs', {curr_location: "Home"}) %>
+    <%- include('templates/rooms_heading.ejs') %>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/public/js/room.js"></script>
     <div class="main_container">
       <div class="pageHeader">
@@ -21,86 +22,14 @@
       </div>
       <div class="currentUserList">
         <ul>
-          <li>User</li>
-          <li>User</li>
-          <li>User</li>
-          <li>User</li>
-          <li>User</li>
-          <li>User</li>
-          <li>User</li>
-          <li>User</li>
-          <li>User</li>
-          <li>User</li>
-          <li>User</li>
         </ul>
       </div>
       <div class="messages">
         <ul>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
-          <li>John: I IS BEST SPAMerrr!!!!</li>
         </ul>
       </div>
       <div class="sendMessage">
-        <textarea name="message"></textarea>
+        <textarea class="message_to_send"></textarea>
         <button class="btn">Send</button>
       </div>
     </div>
