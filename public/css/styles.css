@@ -1,0 +1,15 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  background-size: 100% auto;
+  background-color: #383F45 !important;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}

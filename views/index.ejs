@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/public/css/styles.css">
+    <link rel="stylesheet" href="/public/css/index.css">
+    <link rel="stylesheet" href="/public/lib/css/bootstrap.min.css">
+    <script src="/public/lib/js/bootstrap.min.js"></script>
+    <script src="/public/lib/js/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <%- include('templates/rooms_heading.ejs') %> 
+
+    <form action="/room" method="GET">
+        <input type="number" name="num" id="room" value="">
+        <input type="submit" value="GO">
+    </form>
+</body>
+</html>

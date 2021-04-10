@@ -1,0 +1,102 @@
+.main_container {
+  display: block;
+  width: 900px;
+  overflow: auto;
+  margin: 30px auto 0 auto;
+}
+
+.pageHeader {
+  background-color: #212529;
+  float: left;
+  /* clear: none; */
+  border: 1px solid;
+  height: 100px;
+  width: 900px;
+  text-align: center;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.currentUserList {
+  background-color: #212529;
+  float: left;
+  /* clear: none; */
+  border: 1px solid;
+  height: 600px;
+  width: 200px;
+}
+
+.messages {
+  background-color: #212529;
+  float: left;
+  /* clear: none; */
+  border: 1px solid;
+  height: 600px;
+  width: 700px;
+}
+
+.sendMessage {
+  background-color: rgb(66, 97, 126);
+  float: left;
+  margin: auto;
+  /* clear: none; */
+  border: 1px solid;
+  height: 100px;
+  width: 900px;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.currentUserList ul {
+  list-style-type: none;
+}
+
+.sendMessage textarea {
+  float: left;
+  resize: none;
+  height: 98px;
+  width: 798px;
+  border-radius: 0px 0px 0px 10px;
+}
+
+.sendMessage button {
+  width: 100px;
+  height: 98px;
+}
+
+.sendMessage button:hover {
+  background-color: #dd403a;
+}
+
+.pageHeader h1 {
+  text-align: center;
+  font-size: 60px;
+  color: cadetblue;
+}
+
+.currentUserList {
+  text-align: center;
+}
+
+.currentUserList ul li {
+  color: cadetblue;
+  font-size: 20px;
+}
+
+.messages {
+  padding-left: 10px;
+  padding-top: 10px;
+  border-left-width: 3px;
+  border-left-color: #383f45;
+  border-left-style: solid;
+  overflow: scroll;
+  overflow-x: hidden;
+  resize: none;
+}
+
+.messages ul {
+  float: left;
+  list-style-type: none;
+}
+
+.messages ul li {
+  color: cadetblue;
+}
