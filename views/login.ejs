@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/public/css/styles.css" />
+    <link rel="stylesheet" href="/public/css/login.css" />
+    <link rel="stylesheet" href="/public/lib/css/bootstrap.min.css" />
+    <script src="/public/lib/js/bootstrap.min.js"></script>
+    <script src="/public/lib/js/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+  </head>
+  <body>
+    <%- include('templates/rooms_heading.ejs') %>
+
+    <div class="main-container">
+      <div class="page-header">
+        <h1>Login</h1>
+      </div>
+      <div class="messages">
+        <form action="/login" method="POST">
+          <label for="username">Username:</label>
+          <input type="text" autocomplete="off" name="username" id="username"></input>
+
+          <label for="email">Email:</label>
+          <input type="text" autocomplete="off" name="email" id="email"></input>
+
+          <label for="password">Password:</label>
+          <input type="password" autocomplete="off" name="password" id="password"></input>
+
+          <button type="submit" class="btn">Submit</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

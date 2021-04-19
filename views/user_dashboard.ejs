@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/public/css/styles.css" />
+    <link rel="stylesheet" href="/public/css/user_dashboard.css" />
+    <link rel="stylesheet" href="/public/lib/css/bootstrap.min.css" />
+    <script src="/public/lib/js/bootstrap.min.js"></script>
+    <script src="/public/lib/js/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8" />
+    <title>Home</title>
+  </head>
+  <body>
+    <%- include('templates/rooms_heading.ejs') %>
+
+    <div class="main-container">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+      </div>
+      <div class="messages">
+        <div class="left-side">
+          <p>Username: <%= username %></p>
+          <p>Total Messages Sent: <%= msgs_sent_total %> </p>
+        </div>
+        <div class="right-side"></div>
+      </div>
+    </div>
+  </body>
+</html>
