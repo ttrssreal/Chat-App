@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const expressSession = require('express-session');
 const db = require('./database.js');
 
-const port = 5000;
+const port = 9999;
 
 const store = new expressSession.MemoryStore();
 
