@@ -21,7 +21,10 @@ app.use(expressSession({
 const validateSession = (req, res, next) => {
     if (req.session.user)
         next();
-    else res.redirect("/login");
+    else {
+        req.session.loginMessage = "You need to log in to use this!"
+        res.redirect("/login")
+    }
         
 };
 
@@ -35,10 +38,10 @@ socketio.on("connection", socket => {
 });
 
 app.get('/', (req, res) => {
-    res.render("index.ejs");
+    res.render("index.ejs", { message: req.session.createAccMessage });
 });
 
-app.get('/room', (req, res) => {
+app.get('/room', validateSession, (req, res) => {
     res.render("room.ejs", {
         room_number: req.query.num
     });
@@ -51,17 +54,26 @@ app.get('/signup', (req, res) => {
 app.post('/signup', (req, res) => {
     if (db.databaseCredsFormatValid(req.body)) {
         db.userExist(req.body["username"], (exists) => {
-            if (!exists)
+            if (!exists) {
                 db.addUser(req.body, result => {
                     console.log(result);
                 });
+                req.session.createAccMessage = "Succsess";
+                res.redirect('/')
+            }
+            else {
+                req.session.createAccMessage = "user exists";
+                res.redirect('/')
+            }
         });
+    } else {
+        req.session.createAccMessage = "invalid cred";
+        res.redirect('/');
     }
-    res.redirect('/');
 });
 
 app.get('/login', (req, res) => {
-    res.render("login.ejs");
+    res.render("login.ejs", { message: req.session.loginMessage });
 });
 
 app.post('/login', (req, res) => {
@@ -72,17 +84,32 @@ app.post('/login', (req, res) => {
         if (isValid) {
             console.log("GUUD");
             req.session.user = req.body["username"];
+            req.session.loginMessage = "";
             res.redirect('/dashboard');
         }
-        else res.redirect('/login');
+        else {
+            req.session.loginMessage = "Username or Password is incorrect";
+            res.redirect('/login');
+        } 
     });
 });
 
 app.get('/dashboard', validateSession, (req, res) => {
-    console.log(req.session.user);
-    res.render("user_dashboard.ejs", {
-        username: req.session.user,
-        msgs_sent_total: 100000
+    db.exec_query("SELECT msgs_sent_today FROM User WHERE username='"+req.session.user+"'", rows => {
+        let msgs_sent_today = rows[0]["msgs_sent_today"];
+        console.log(rows[0]);
+        db.exec_query("SELECT msgs_sent_total FROM User WHERE username='"+req.session.user+"'", rows => {
+            let msgs_sent_total = rows[0]["msgs_sent_total"];
+            db.exec_query("SELECT rooms_joined_total FROM User WHERE username='"+req.session.user+"'", rows => {
+                let rooms_joined_total = rows[0]["rooms_joined_total"];
+                res.render("user_dashboard.ejs", {
+                    username: req.session.user,
+                    msgs_sent_today: msgs_sent_today,
+                    msgs_sent_total: msgs_sent_total,
+                    rooms_joined_total: rooms_joined_total
+                });
+            });
+        });
     });
 });
 

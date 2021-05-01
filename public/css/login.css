@@ -16,16 +16,6 @@
   border-radius: 10px 10px 0px 0px;
 }
 
-.messages {
-  background-color: #212529;
-  float: left;
-  height: 700px;
-  width: 100%;
-  border-radius: 0px 0px 10px 10px;
-  display: flex;
-  justify-content: space-evenly;
-}
-
 .page-header h1 {
   text-align: center;
   font-size: 60px;
@@ -34,8 +24,13 @@
 }
 
 .messages {
-  height: 100%;
+  background-color: #212529;
+  float: left;
+  height: 700px;
   width: 100%;
+  border-radius: 0px 0px 10px 10px;
+  display: flex;
+  flex-direction: column;
   text-align: center;
 }
 
@@ -60,4 +55,12 @@
 .messages form .btn {
   background-color:#42617E;
   margin-top: 20px;
+}
+
+.messages p {
+  color:#dd403a;
+}
+
+.messages a {
+  margin-top: 30px;
 }

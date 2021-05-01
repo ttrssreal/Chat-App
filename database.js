@@ -1,4 +1,5 @@
 const sqlite3 = require("sqlite3").verbose();
+const bcrypt = require("bcrypt");
 
 var db = new sqlite3.Database("./database/database.db"); 
 
@@ -13,7 +14,7 @@ const exec_query = (query, callback) => {
 
 const databaseCredsFormatValid = (creds) => {
     let regexUsername = /^[a-z][^\W_]{4,29}$/i;
-    let regexPassword = /^(?=[^a-z]*[a-z])(?=\D*\d)[^:&.~\s]{8,100}$/;
+    let regexPassword = /^(?=[^a-z]*[a-z])(?=\D*\d)[^:&.~\s]{8,1000}$/;
     let regexEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
     let usernameValid, passwordValid, emailValid = false;
     if (creds) {
@@ -36,9 +37,11 @@ const databaseCredsValid = (creds, callback) => {
     userExist(creds["username"], exsists => {
         if (exsists) {
             exec_query("SELECT password FROM User WHERE username='" + creds["username"] + "'", rows => {
-                if (creds["password"] == rows[0]["password"])
-                    callback(true);
-                else callback(false);
+                bcrypt.compare(creds["password"], rows[0]["password"], (err, result) => {
+                    if (result)
+                        callback(true);
+                    else callback(false);
+                });
             });
         } else {
             callback(false);
@@ -56,8 +59,12 @@ const userExist = (username, callback) => {
 }
 
 const addUser = (creds, callback) => {
-    exec_query("INSERT INTO User (username, password, email) VALUES ('" + creds["username"] + "', '"+ creds["password"] +"', '" + creds["email"] + "')", rows => {
-        callback(rows);
+    bcrypt.hash(creds["password"], 12, (err, passwdHash) => {
+        exec_query("INSERT INTO User (username, password, email, msgs_sent_today, msgs_sent_total, " +
+            "rooms_joined_total) VALUES ('" + creds["username"] + "', '"+ passwdHash +"', '" + creds["email"] + "'," +
+            " 0, 0, 0)", rows => {
+            callback(rows);
+        });
     });
 }
 

@@ -17,18 +17,17 @@
         <h1>Login</h1>
       </div>
       <div class="messages">
+        <p><%= message %></p>
         <form action="/login" method="POST">
           <label for="username">Username:</label>
           <input type="text" autocomplete="off" name="username" id="username"></input>
-
-          <label for="email">Email:</label>
-          <input type="text" autocomplete="off" name="email" id="email"></input>
 
           <label for="password">Password:</label>
           <input type="password" autocomplete="off" name="password" id="password"></input>
 
           <button type="submit" class="btn">Submit</button>
         </form>
+        <a href="/">Create An Account</a>
       </div>
     </div>
   </body>

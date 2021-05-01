@@ -42,41 +42,45 @@
   height: 100%
 }
 
-.left-side .create-account {
+.create-account {
   height: 100%;
   width: 100%;
   text-align: center;
 }
 
-.left-side .create-account form {
+.create-account form {
   margin: 0 auto;
   width: 60%;
 }
 
-.left-side .create-account form input {
+.create-account form input {
   background-color: #383F45;
   caret-color: #2b6ca8;
   margin-top: 10px;
   width: 100%
 }
 
-.left-side .create-account form label {
+.create-account form label {
   margin-top: 10px;
   color:cadetblue;
   font-family: 'Roboto', sans-serif;
 }
 
-.left-side .create-account form .btn {
+.create-account form .btn {
   background-color:#42617E;
   margin-top: 20px;
 }
 
-.right-side .info {
+.create-account p {
+  color:#dd403a;
+}
+
+.info {
   width: 100%;
   height: 50%;
 }
 
-.right-side .enter-anonymous {
+.enter-anonymous {
   width: 100%;
   height: 50%;
 }

@@ -19,6 +19,12 @@
       <div class="messages">
         <div class="left-side">
           <div class="create-account">
+            <% if (message == "invalid cred") { %>
+              <p>Invalid credentials make sure that your username is 5-30 characters 
+                long and your password is at least 8 long and has one number</p>
+            <% } else if (message == "user exists") { %>
+              <p>A user by that name already exists</p>
+            <% } %> 
             <form action="/signup" method="POST">
               <label for="username">Username:</label>
               <input type="text" autocomplete="off" name="username" id="username"></input>
