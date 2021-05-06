@@ -10,7 +10,7 @@
     <title>Home</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs') %>
+    <%- include('templates/rooms_heading.ejs', { loggedIn: loggedIn, username: username }) %>
 
     <div class="main-container">
       <div class="page-header">

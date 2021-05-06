@@ -5,22 +5,28 @@
         <a class="nav-link" href="/">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/room?num=1">Room 1</a>
+        <a class="nav-link" href="/room?roomid=3">Room 1</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/room?num=2">Room 2</a>
+        <a class="nav-link" href="/room?roomid=4">Room 2</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/room?num=3">Room 3</a>
+        <a class="nav-link" href="/room?roomid=5">Room 3</a>
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li>
-        <a class="btn navbar-text" href="/dashboard">Dashboard</a>
-      </li>
-      <li>
-        <a class="btn navbar-text" href="/login">Login</a>
-      </li>
+      <% if (loggedIn) { %>
+        <li>
+          <a class="btn navbar-text" href="/logout">Logout</a>
+        </li>
+        <li>
+          <a class="btn navbar-text" href="/dashboard"><%= username %> </a>
+        </li>
+      <% } else { %>
+        <li>
+          <a class="btn navbar-text" href="/login">Login</a>
+        </li>
+      <% } %> 
     </ul>
   </div>
 </nav>

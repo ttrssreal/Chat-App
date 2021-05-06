@@ -49,6 +49,8 @@
 }
 
 .create-account form {
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
   width: 60%;
 }
@@ -75,6 +77,11 @@
   color:#dd403a;
 }
 
+.reqs {
+  color: cadetblue;
+  padding-top: 20px;
+}
+
 .info {
   width: 100%;
   height: 50%;
@@ -83,4 +90,34 @@
 .enter-anonymous {
   width: 100%;
   height: 50%;
+}
+
+
+.username-labl-err {
+  display: flex;
+  flex-direction: column;
+}
+
+.username-labl-err p {
+  margin-bottom: 0px;
+}
+
+
+.email-labl-err {
+  display: flex;
+  flex-direction: column;
+}
+
+.email-labl-err p {
+  margin-bottom: 0px;
+}
+
+
+.password-labl-err {
+  display: flex;
+  flex-direction: column;
+}
+
+.password-labl-err p {
+  margin-bottom: 0px;
 }

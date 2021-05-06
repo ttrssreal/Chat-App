@@ -13,12 +13,12 @@
     <title>Document</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs') %>
+    <%- include('templates/rooms_heading.ejs', { loggedIn: loggedIn, username: username }) %>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/public/js/room.js"></script>
     <div class="main_container">
       <div class="pageHeader">
-        <h1>Chatroom <%=room_number%></h1>
+        <h1>Chatroom <%=room_name%></h1>
       </div>
       <div class="currentUserList">
         <ul>

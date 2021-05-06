@@ -1,10 +1,11 @@
-const express = require('express');
-const app = express();
-const server = require('http').createServer(app);
-const socketio = require('socket.io')(server);
-const bodyParser = require('body-parser');
-const expressSession = require('express-session');
-const db = require('./database.js');
+const express = require('express'),
+      app = express(),
+      server = require('http').createServer(app),
+      socketio = require('socket.io')(server),
+      bodyParser = require('body-parser'),
+      expressSession = require('express-session'),
+      db = require('./database.js'),
+      cookieParser = require('cookie-parser');
 
 const port = 9999;
 
@@ -18,32 +19,35 @@ app.use(expressSession({
     resave: true,
     saveUninitialized: false
 }));
+
 const validateSession = (req, res, next) => {
-    if (req.session.user)
+    if (req.session.loggedIn)
         next();
     else {
         req.session.loginMessage = "You need to log in to use this!"
         res.redirect("/login")
     }
-        
 };
 
 app.set('view engine', 'ejs');
 
 socketio.on("connection", socket => {
     socketio.emit("new_user", "Johnny");
-    socket.on("message", (data) => {
+    socket.on("message", data => {
         socketio.emit("message", data)
     });
 });
 
 app.get('/', (req, res) => {
-    res.render("index.ejs", { message: req.session.createAccMessage });
+    res.render("index.ejs", { loggedIn: req.session.loggedIn, username: req.session.user });
 });
 
 app.get('/room', validateSession, (req, res) => {
+    req.session.currRoomId = req.query.roomid;
     res.render("room.ejs", {
-        room_number: req.query.num
+        room_name: req.query.num,
+        loggedIn: req.session.loggedIn, 
+        username: req.session.user
     });
 });
 
@@ -53,68 +57,83 @@ app.get('/signup', (req, res) => {
 
 app.post('/signup', (req, res) => {
     if (db.databaseCredsFormatValid(req.body)) {
-        db.userExist(req.body["username"], (exists) => {
-            if (!exists) {
-                db.addUser(req.body, result => {
-                    console.log(result);
+        db.usernameExist(req.body["username"]).then(() => {
+            res.redirect('/')
+        }).catch(err => {
+            db.emailExist(req.body["email"]).then(() => {
+                res.redirect('/')
+            }).catch(err => {
+                db.addUser(req.body).then(() => {
+                    res.redirect('/login');
+                }).catch(err => {
+                    res.redirect('/')
                 });
-                req.session.createAccMessage = "Succsess";
-                res.redirect('/')
-            }
-            else {
-                req.session.createAccMessage = "user exists";
-                res.redirect('/')
-            }
+            });
         });
     } else {
-        req.session.createAccMessage = "invalid cred";
         res.redirect('/');
     }
 });
 
 app.get('/login', (req, res) => {
-    res.render("login.ejs", { message: req.session.loginMessage });
+    res.render("login.ejs", { loggedIn: req.session.loggedIn, username: req.session.user });
 });
 
 app.post('/login', (req, res) => {
+    if (!req.session.loggedIn) {
+        req.session.loggedIn = false;
+    }
     db.databaseCredsValid({
         username: req.body["username"],
         password: req.body["password"]
-    }, isValid => {
-        if (isValid) {
-            console.log("GUUD");
-            req.session.user = req.body["username"];
-            req.session.loginMessage = "";
-            res.redirect('/dashboard');
-        }
-        else {
-            req.session.loginMessage = "Username or Password is incorrect";
-            res.redirect('/login');
-        } 
+    }).then(() => {
+        req.session.user = req.body["username"];
+        req.session.loggedIn = true;
+        res.redirect('/');
+    }).catch(err => {
+        req.session.loginMessage = "Username or Password is incorrect";
+        res.redirect('/login');
     });
 });
 
 app.get('/dashboard', validateSession, (req, res) => {
-    db.exec_query("SELECT msgs_sent_today FROM User WHERE username='"+req.session.user+"'", rows => {
-        let msgs_sent_today = rows[0]["msgs_sent_today"];
-        console.log(rows[0]);
-        db.exec_query("SELECT msgs_sent_total FROM User WHERE username='"+req.session.user+"'", rows => {
-            let msgs_sent_total = rows[0]["msgs_sent_total"];
-            db.exec_query("SELECT rooms_joined_total FROM User WHERE username='"+req.session.user+"'", rows => {
-                let rooms_joined_total = rows[0]["rooms_joined_total"];
-                res.render("user_dashboard.ejs", {
-                    username: req.session.user,
-                    msgs_sent_today: msgs_sent_today,
-                    msgs_sent_total: msgs_sent_total,
-                    rooms_joined_total: rooms_joined_total
-                });
-            });
+    db.getUserInfo("admin", "msgs_sent_today", "msgs_sent_total", "rooms_joined_total").then(rows => {
+        rows = rows.map(row => { return row[0]; });
+        res.render("user_dashboard.ejs", {
+            username: req.session.user,
+            msgs_sent_today: rows[0]["msgs_sent_today"],
+            msgs_sent_total: rows[1]["msgs_sent_total"],
+            rooms_joined_total: rows[2]["rooms_joined_total"],
+            loggedIn: req.session.loggedIn,
+            username: req.session.user
         });
+    });
+});
+
+app.get('/ad', (req, res) => {
+    req.session.user = "admin";
+    res.redirect('/dashboard');
+});
+
+app.post('/is_username_reg', (req, res) => {
+    db.usernameExist(req.body.username).then(() => {
+        res.json({registered: true});
+    }).catch(err => {
+        res.json({registered: false});
+    });
+});
+
+app.post('/is_email_reg', (req, res) => {
+    db.emailExist(req.body.email).then(() => {
+        res.json({registered: true});
+    }).catch(err => {
+        res.json({registered: false});
     });
 });
 
 app.get('/logout', (req, res) => {
     req.session.destroy();
+    res.redirect("/login");
 });
 
 server.listen(port, () => {

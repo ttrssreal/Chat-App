@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="/public/lib/css/bootstrap.min.css" />
     <script src="/public/lib/js/bootstrap.min.js"></script>
     <script src="/public/lib/js/jquery-3.6.0.min.js"></script>
+    <script src="/public/js/index.js"></script>
     <meta charset="UTF-8" />
     <title>Home</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs') %>
+    <%- include('templates/rooms_heading.ejs', { loggedIn: loggedIn, username: username }) %>
 
     <div class="main-container">
       <div class="page-header">
@@ -19,25 +20,35 @@
       <div class="messages">
         <div class="left-side">
           <div class="create-account">
-            <% if (message == "invalid cred") { %>
-              <p>Invalid credentials make sure that your username is 5-30 characters 
-                long and your password is at least 8 long and has one number</p>
-            <% } else if (message == "user exists") { %>
-              <p>A user by that name already exists</p>
-            <% } %> 
             <form action="/signup" method="POST">
-              <label for="username">Username:</label>
-              <input type="text" autocomplete="off" name="username" id="username"></input>
+              <div class="username">
+                <div class="username-labl-err">
+                  <label for="username">Username:</label>
+                </div>
+                <input type="text" autocomplete="off" name="username" id="username">
+              </div>
 
-              <label for="email">Email:</label>
-              <input type="text" autocomplete="off" name="email" id="email"></input>
+              <div class="email">
+                <div class="email-labl-err">
+                  <label for="email">Email:</label>
+                </div>
+                <input type="text" autocomplete="off" name="email" id="email">
+              </div>
 
-              <label for="password">Password:</label>
-              <input type="password" autocomplete="off" name="password" id="password"></input>
+              <div class="password">
+                <div class="password-labl-err">
+                  <label for="password">Password:</label>
+                </div>
+                <input type="password" autocomplete="off" name="password" id="password">
+              </div>
 
               <button type="submit" class="btn">Submit</button>
             </form>
+            <div class="reqs">
+              <div>Username: 5-30<br>Password: 8 <=, and at least one number.</div>
+            </div>
           </div>
+          
         </div>
         <div class="right-side">
           <div class="info"></div>
@@ -45,5 +56,6 @@
         </div>
       </div>
     </div>
+    <!-- <button onclick="$.post('/signup', { username: 'jesus', email: 'jesus@jesuscorp.hvn', password: 'password' })" class="btn">Clickey Meh!!</button> -->
   </body>
 </html>

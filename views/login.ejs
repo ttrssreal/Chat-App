@@ -10,20 +10,20 @@
     <title>Login</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs') %>
+    <%- include('templates/rooms_heading.ejs', { loggedIn: loggedIn, username: username }) %>
 
     <div class="main-container">
       <div class="page-header">
         <h1>Login</h1>
       </div>
       <div class="messages">
-        <p><%= message %></p>
+        <p></p>
         <form action="/login" method="POST">
           <label for="username">Username:</label>
-          <input type="text" autocomplete="off" name="username" id="username"></input>
+          <input type="text" autocomplete="off" name="username" id="username">
 
           <label for="password">Password:</label>
-          <input type="password" autocomplete="off" name="password" id="password"></input>
+          <input type="password" autocomplete="off" name="password" id="password">
 
           <button type="submit" class="btn">Submit</button>
         </form>
