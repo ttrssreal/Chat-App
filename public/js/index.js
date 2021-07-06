@@ -9,6 +9,7 @@ $(document).ready(() => {
     let showingEmlMsg = true;
     let showingPasMsg = true;
 
+    
     let regexUsername = /^[a-z][^\W_]{4,29}$/i;
     let regexPassword = /^(?=[^a-z]*[a-z])(?=\D*\d)[^:&.~\s]{8,1000}$/;
     let regexEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
@@ -41,7 +42,7 @@ $(document).ready(() => {
                 "/is_username_reg",
                 { username: currUsername },
                 result => {
-                    if (result["registered"])
+                    if (result)
                         $(".username-labl-err").append("<p>Sorry, this username is already registered.</p>");
                 }
             );
@@ -57,7 +58,7 @@ $(document).ready(() => {
                 "/is_email_reg",
                 { email: currEmail },
                 result => {
-                    if (result["registered"])
+                    if (result)
                         $(".email-labl-err").append("<p>Email has already registered</p>");
                 }
             );
