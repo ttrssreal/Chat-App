@@ -38,14 +38,6 @@ $(document).ready(() => {
         if ((stopedTypingTimerUsr >= showMsgAfterMillSecs) && !showingUsrMsg) {
             showingUsrMsg = true;
             currUsername = $("#username").val();
-            $.post(
-                "/is_username_reg",
-                { username: currUsername },
-                result => {
-                    if (result)
-                        $(".username-labl-err").append("<p>Sorry, this username is already registered.</p>");
-                }
-            );
             if (!regexUsername.test(currUsername))
                 $(".username-labl-err").append("<p>Username not between 5-30 characters.</p>");
         }
@@ -54,24 +46,8 @@ $(document).ready(() => {
         if ((stopedTypingTimerEml >= showMsgAfterMillSecs) && !showingEmlMsg) {
             showingEmlMsg = true;
             currEmail = $("#email").val();
-            $.post(
-                "/is_email_reg",
-                { email: currEmail },
-                result => {
-                    if (result)
-                        $(".email-labl-err").append("<p>Email has already registered</p>");
-                }
-            );
             if (!regexEmail.test(currEmail))
                 $(".email-labl-err").append("<p>Invalid email format.</p>");
-        }
-
-        //Password Messages
-        if ((stopedTypingTimerPas >= showMsgAfterMillSecs) && !showingPasMsg) {
-            showingPasMsg = true;
-            currPassword = $("#password").val();
-            if (!regexPassword.test(currPassword))
-                $(".password-labl-err").append("<p>Password not at least 8 characters long or dosent have at least one number</p>");
         }
         
         if (!showingUsrMsg)

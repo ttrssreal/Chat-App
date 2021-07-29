@@ -23,6 +23,9 @@
             <form action="/signup" method="POST">
               <div class="username">
                 <div class="username-labl-err">
+                  <% if(messages.error) { %>
+                    <p><%= messages.error %> </p>
+                  <% } %> 
                   <label for="username">Username:</label>
                 </div>
                 <input type="text" autocomplete="off" name="username" id="username">
