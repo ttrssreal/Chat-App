@@ -10,7 +10,7 @@
     <title>Login</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs', { loggedIn: loggedIn, username: username }) %>
+    <%- include('templates/rooms_heading.ejs', { user: user ? user : null }) %>
 
     <div class="main-container">
       <div class="page-header">

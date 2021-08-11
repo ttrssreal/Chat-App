@@ -10,7 +10,7 @@
     <title>Home</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs', { loggedIn: loggedIn, username: username }) %>
+    <%- include('templates/rooms_heading.ejs', { user: user ? user : null }) %>
 
     <div class="main-container">
       <div class="page-header">
@@ -18,11 +18,11 @@
       </div>
       <div class="messages">
         <div class="left-side">
-          <p>Username: <%= username %></p>
-          <p>Total Messages Sent Today: <%= msgs_sent_today %> </p>
-          <p>Total Messages Sent: <%= msgs_sent_total %> </p>
+          <p>Username: <%= user.username %></p>
+          <p>Total Messages Sent Today: <%= user.msgs_sent_today %> </p>
+          <p>Total Messages Sent: <%= user.msgs_sent_total %> </p>
           <br>
-          <p>Rooms Joined: <%= rooms_joined_total %> </p>
+          <p>Rooms Joined: <%= user.rooms_joined_total %> </p>
         </div>
         <div class="right-side"></div>
       </div>

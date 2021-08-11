@@ -11,7 +11,7 @@
     <title>Home</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs', { loggedIn: loggedIn, username: username }) %>
+    <%- include('templates/rooms_heading.ejs', { user: user ? user : null }) %>
 
     <div class="main-container">
       <div class="page-header">
@@ -23,9 +23,7 @@
             <form action="/signup" method="POST">
               <div class="username">
                 <div class="username-labl-err">
-                  <% if(messages.error) { %>
-                    <p><%= messages.error %> </p>
-                  <% } %> 
+                    <p><%= messages.error ? messages.error : "" %></p>
                   <label for="username">Username:</label>
                 </div>
                 <input type="text" autocomplete="off" name="username" id="username">
@@ -59,6 +57,6 @@
         </div>
       </div>
     </div>
-    <!-- <button onclick="$.post('/signup', { username: 'jesus', email: 'jesus@jesuscorp.hvn', password: 'password' })" class="btn">Clickey Meh!!</button> -->
+    <button onclick="$.post('/signup', { username: 'test', email: 'test@testing.test', password: 'testpassword' })" class="btn">Clickey Meh!!</button>
   </body>
 </html>

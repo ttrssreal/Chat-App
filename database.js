@@ -8,21 +8,9 @@ class Database {
     
     exec_query(query, params) {
         return new Promise((res, rej) => {
-            if (params) {
-                this.dbLnk.get(query, params, (err, rows) => {
-                    if (err)
-                        rej(err);
-                    else
-                        res(rows);
-                });
-            } else {
-                this.dbLnk.get(query, [], (err, rows) => {
-                    if (err)
-                        rej(err);
-                    else
-                        res(rows);
-                });
-            }
+            this.dbLnk.get(query, params ? params : [], (err, rows) => {
+                err ? rej(err) : res(rows);
+            });
         });
     };
     
@@ -30,9 +18,7 @@ class Database {
         return new Promise((res, rej) => {
             this.exec_query("SELECT * FROM User WHERE username=?", [username])
             .then(rows => {
-                if (rows)
-                    res(true);
-                else res(false);
+                rows ? res(true) : res(false);
             }).catch(err => {
                 rej(err);
             });
@@ -43,9 +29,7 @@ class Database {
         return new Promise((res, rej) => {
             this.exec_query("SELECT * FROM User WHERE email=?", [email])
             .then(rows => {
-                if (rows[0])
-                    res(true);
-                else res(false);
+                rows ? res(true) : res(false);
             }).catch(err => {
                 rej(err);
             });
@@ -59,7 +43,7 @@ class Database {
     getInfo(table, selector, value, ...info) {
         return Promise.all(info.map(nameOfFeild => {
             return new Promise((res, rej) => {
-                exec_query("SELECT ? FROM ? WHERE ?=?", [nameOfFeild, table, selector, value])
+                this.exec_query("SELECT ? FROM ? WHERE ?=?", [nameOfFeild, table, selector, value])
                 .then(rows => {
                     res(rows);
                 }).catch(err => {
@@ -175,20 +159,17 @@ class Database {
         }
     };
     
-    databaseCredsValid(creds) {
+    databaseCredsCorrect(creds) {
         return new Promise((res, rej) => {
             this.usernameExist(creds["username"])
             .then(result => {
                 if (result)
-                    return this.exec_query("SELECT password, uid FROM User WHERE username=?", [creds["username"]])
-                else
-                    res(false);
+                    return this.exec_query("SELECT * FROM User WHERE username=?", [creds["username"]])
+                res(false);
             })
             .then(rows => {
                 bcrypt.compare(creds["password"], rows["password"], (err, result) => {
-                    if (result)
-                        res(rows["uid"]);
-                    else res(false);
+                    result ? res(rows) : res(false);
                 });
             })
             .catch(err => {
@@ -199,19 +180,22 @@ class Database {
     
     addUser(creds) {
         return new Promise((res, rej) => {
-            this.usernameExist(creds["username"]).then(() => {
-                bcrypt.hash(creds["password"], 12, (err, passwdHash) => {
-                    this.exec_query(`INSERT INTO User 
-                    (username, password, email, msgs_sent_today, 
-                    msgs_sent_total, rooms_joined_total) 
-                    VALUES (?, ?, ?, 0, 0, 0)`,
-                    [creds["username"], passwdHash, creds["email"]])
-                    .then(rows => {
-                        res(rows);
-                    }).catch(err => {
-                        rej(err);
+            this.usernameExist(creds["username"])
+            .then(uExist => {
+                if(!uExist) {
+                    bcrypt.hash(creds["password"], 12, (err, passwdHash) => {
+                        this.exec_query(`INSERT INTO User 
+                        (username, password, email, msgs_sent_today, 
+                        msgs_sent_total, rooms_joined_total) 
+                        VALUES (?, ?, ?, 0, 0, 0)`,
+                        [creds["username"], passwdHash, creds["email"]])
+                        .then(rows => {
+                            res(true);
+                        }).catch(err => {
+                            rej(err);
+                        });
                     });
-                });
+                }
             }).catch(err => {
                 rej(err);
             });

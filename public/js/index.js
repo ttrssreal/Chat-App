@@ -10,8 +10,8 @@ $(document).ready(() => {
     let showingPasMsg = true;
 
     
-    let regexUsername = /^[a-z][^\W_]{4,29}$/i;
-    let regexPassword = /^(?=[^a-z]*[a-z])(?=\D*\d)[^:&.~\s]{8,1000}$/;
+    let regexUsername = /^[a-z][^\W_]{3,29}$/i;
+    let regexPassword = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
     let regexEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
 
     $("#username").on("input change", () => {
@@ -39,15 +39,22 @@ $(document).ready(() => {
             showingUsrMsg = true;
             currUsername = $("#username").val();
             if (!regexUsername.test(currUsername))
-                $(".username-labl-err").append("<p>Username not between 5-30 characters.</p>");
+                $(".username-labl-err").append("<p>Username not between 4-30 characters.</p>");
         }
         
         //Email Messages
         if ((stopedTypingTimerEml >= showMsgAfterMillSecs) && !showingEmlMsg) {
             showingEmlMsg = true;
             currEmail = $("#email").val();
-            if (!regexEmail.test(currEmail))
+            if (!regexEmail.test(currEmail));
                 $(".email-labl-err").append("<p>Invalid email format.</p>");
+        }
+
+        if ((stopedTypingTimerPas >= showMsgAfterMillSecs) && !showingPasMsg) {
+            showingPasMsg = true;
+            currPassword = $("#password").val();
+            if (!regexPassword.test(currPassword))
+                $(".password-labl-err").append("<p>Invalid password format.</p>");
         }
         
         if (!showingUsrMsg)

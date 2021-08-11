@@ -13,7 +13,7 @@
     <title>Document</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs', { loggedIn: loggedIn, username: username }) %>
+    <%- include('templates/rooms_heading.ejs', { user: user ? user : null }) %>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/public/js/room.js"></script>
     <div class="main_container">

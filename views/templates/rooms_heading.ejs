@@ -15,12 +15,12 @@
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <% if (loggedIn) { %>
+      <% if (user) { %>
         <li>
           <a class="btn navbar-text" href="/logout">Logout</a>
         </li>
         <li>
-          <a class="btn navbar-text" href="/dashboard"><%= username %> </a>
+          <a class="btn navbar-text" href="/dashboard"><%= user.username %> </a>
         </li>
       <% } else { %>
         <li>
