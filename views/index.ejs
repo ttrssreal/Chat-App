@@ -20,10 +20,9 @@
       <div class="messages">
         <div class="left-side">
           <div class="create-account">
-            <form action="/signup" method="POST">
+            <form class="form-create-account">
               <div class="username">
                 <div class="username-labl-err">
-                    <p><%= messages.error ? messages.error : "" %></p>
                   <label for="username">Username:</label>
                 </div>
                 <input type="text" autocomplete="off" name="username" id="username">
@@ -57,6 +56,5 @@
         </div>
       </div>
     </div>
-    <button onclick="$.post('/signup', { username: 'test', email: 'test@testing.test', password: 'testpassword' })" class="btn">Clickey Meh!!</button>
   </body>
 </html>

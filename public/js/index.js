@@ -1,4 +1,17 @@
 $(document).ready(() => {
+    $(".form-create-account").submit(e => {
+        e.preventDefault();
+        let username = $("#username").val(), 
+            email = $("#email").val(), 
+            password = $("#password").val();
+
+        $.post("/signup", { username, email, password }, res => {
+            if (!res.succ)
+                $(".username-labl-err p" ).html(res.message);
+            else document.location = "/login";
+        });
+    })
+    
     let showMsgAfterMillSecs = 1000;
 
     let stopedTypingTimerUsr = 0;
@@ -10,9 +23,9 @@ $(document).ready(() => {
     let showingPasMsg = true;
 
     
-    let regexUsername = /^[a-z][^\W_]{3,29}$/i;
-    let regexPassword = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-    let regexEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
+    let regexUsername = /^[a-zA-z\d]{4,}$/i;
+    let regexPassword = /^(?=.*\d)[a-zA-z\d]{8,}/;
+    let regexEmail = /^[\w/d!#$%&'*+-/=?^`{|}~]+@[a-z\d\-]+.[a-z\d\-]+.[a-z\d\-]+$/;
 
     $("#username").on("input change", () => {
         stopedTypingTimerUsr = 0;
@@ -65,6 +78,4 @@ $(document).ready(() => {
             $(".password-labl-err p").html("");
 
     }, 100);
-
-    
 });

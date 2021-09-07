@@ -17,9 +17,7 @@
         <h1>Login</h1>
       </div>
       <div class="messages">
-        <% if(messages.error) { %>
-          <p><%= messages.error %></p>
-        <% } %> 
+        <p><%= messages.error ? messages.error : "" %></p>
         <form action="/login" method="POST">
           <label for="username">Username:</label>
           <input type="text" autocomplete="off" name="username" id="username">

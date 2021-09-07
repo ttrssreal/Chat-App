@@ -1,6 +1,17 @@
 const sqlite3 = require("sqlite3").verbose();
 const bcrypt = require("bcrypt");
 
+const 
+    QusernameExist = "SELECT uid FROM User WHERE username=?",
+    QemailExist = "SELECT uid FROM User WHERE email=?",
+    QgetUsername = "SELECT username FROM User WHERE uid=?",
+    QgetHash = "SELECT password FROM User WHERE username=?",
+    QgetUser = "SELECT * FROM User WHERE username=?",
+    QaddUser = "INSERT INTO User (username, password, email, msgs_sent_today, msgs_sent_total, rooms_joined_total) VALUES (?, ?, ?, 0, 0, 0)"
+
+
+
+// make queries in varibales up here ^
 class Database {
     constructor(dbRelLoc) {
         this.dbLnk = new sqlite3.Database(dbRelLoc);
@@ -8,7 +19,8 @@ class Database {
     
     exec_query(query, params) {
         return new Promise((res, rej) => {
-            this.dbLnk.get(query, params ? params : [], (err, rows) => {
+            this.dbLnk.get(query, params ? params : [],
+                (err, rows) => {
                 err ? rej(err) : res(rows);
             });
         });
@@ -16,7 +28,8 @@ class Database {
     
     usernameExist(username) {
         return new Promise((res, rej) => {
-            this.exec_query("SELECT * FROM User WHERE username=?", [username])
+            this.exec_query(QusernameExist,
+            [username])
             .then(rows => {
                 rows ? res(true) : res(false);
             }).catch(err => {
@@ -27,7 +40,8 @@ class Database {
     
     emailExist(email) {
         return new Promise((res, rej) => {
-            this.exec_query("SELECT * FROM User WHERE email=?", [email])
+            this.exec_query(QemailExist,
+            [email])
             .then(rows => {
                 rows ? res(true) : res(false);
             }).catch(err => {
@@ -43,7 +57,8 @@ class Database {
     getInfo(table, selector, value, ...info) {
         return Promise.all(info.map(nameOfFeild => {
             return new Promise((res, rej) => {
-                this.exec_query("SELECT ? FROM ? WHERE ?=?", [nameOfFeild, table, selector, value])
+                this.exec_query("SELECT ? FROM ? WHERE ?=?",
+                [nameOfFeild, table, selector, value])
                 .then(rows => {
                     res(rows);
                 }).catch(err => {
@@ -55,7 +70,8 @@ class Database {
 
     getRoomName(roomId) {
         return new Promise((res, rej) => {
-            this.exec_query("SELECT room_name FROM Room WHERE rid=?", [roomId])
+            this.exec_query("SELECT room_name FROM Room WHERE rid=?",
+            [roomId])
             .then(rows => {
                 res(rows);
             }).catch(err => {
@@ -66,7 +82,8 @@ class Database {
     
     getRoomCurrUsers(roomId) {
         return new Promise((res, rej) => {
-            this.exec_query("SELECT uid FROM User WHERE current_rid = ?", [roomId])
+            this.exec_query("SELECT uid FROM User WHERE current_rid = ?",
+            [roomId])
             .then(rows => {
                 res(rows);
             }).catch(err => {
@@ -77,7 +94,8 @@ class Database {
     
     addUserTooRoom(roomId, username) {
         return new Promise((res, rej) => {
-            this.exec_query("UPDATE User SET current_rid=? WHERE uid = (SELECT uid FROM User WHERE username=?);", [roomId, username])
+            this.exec_query("UPDATE User SET current_rid=? WHERE uid = (SELECT uid FROM User WHERE username=?);",
+            [roomId, username])
             .then(() => {
                 res();
             })
@@ -89,7 +107,8 @@ class Database {
     
     removeUserFromRoom(username) {
         return new Promise((res, rej) => {
-            this.exec_query("UPDATE User SET current_rid = NULL WHERE uid = (SELECT uid FROM User WHERE username=?)", [username])
+            this.exec_query("UPDATE User SET current_rid = NULL WHERE uid = (SELECT uid FROM User WHERE username=?)",
+            [username])
             .then(() => {
                 res();
             }).catch(err => {
@@ -100,7 +119,8 @@ class Database {
     
     getUsersCurrRoom(username) {
         return new Promise((res, rej) => {
-            this.exec_query("SELECT current_rid FROM User WHERE uid = (SELECT uid FROM User WHERE username=?)", [username])
+            this.exec_query("SELECT current_rid FROM User WHERE uid = (SELECT uid FROM User WHERE username=?)",
+            [username])
             .then(rows => {
                 res(rows);
             }).catch(err => {
@@ -111,7 +131,8 @@ class Database {
     
     setUsersCurrRoom(roomId, username) {
         return new Promise((res, rej) => {
-            this.exec_query("UPDATE User SET current_rid=? WHERE uid = (SELECT uid FROM User WHERE username=?)", [roomId, username])
+            this.exec_query("UPDATE User SET current_rid=? WHERE uid = (SELECT uid FROM User WHERE username=?)",
+            [roomId, username])
             .then(rows => {
                 res(rows);
             }).catch(err => {
@@ -122,12 +143,10 @@ class Database {
     
     getUsername(uid) {
         return new Promise((res, rej) => {
-            this.exec_query("SELECT username FROM User WHERE uid=?", [uid])
+            this.exec_query(QgetUsername,
+            [uid])
             .then(rows => {
-                if (rows) {
-                    res(rows["username"]);
-                } else res(null)
-                res("admin");
+                rows ? res(rows["username"]) : res(false)
             }).catch(err => {
                 rej(err);
             });
@@ -135,9 +154,9 @@ class Database {
     };
     
     databaseCredsFormatValid(creds) {
-        let regexUsername = /^[a-z][^\W_]{4,29}$/i;
-        let regexPassword = /^(?=[^a-z]*[a-z])(?=\D*\d)[^:&.~\s]{8,1000}$/;
-        let regexEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
+        let regexUsername = /^[a-zA-z\d]{4,}$/i;
+        let regexPassword = /^(?=.*\d)[a-zA-z\d]{8,}/;
+        let regexEmail = /[\w/d!#$%&'*+-/=?^`{|}~]+@[a-z\d\-]+.[a-z\d\-]+.[a-z\d\-]+/;
         var valid = {
             username: false,
             password: false,
@@ -154,9 +173,8 @@ class Database {
                 return true;
             else
                 return valid;
-        } else {
-            return false
         }
+        return false
     };
     
     databaseCredsCorrect(creds) {
@@ -164,16 +182,32 @@ class Database {
             this.usernameExist(creds["username"])
             .then(result => {
                 if (result)
-                    return this.exec_query("SELECT * FROM User WHERE username=?", [creds["username"]])
+                    return this.exec_query(QgetUser,
+                    [creds["username"]])
                 res(false);
             })
             .then(rows => {
-                bcrypt.compare(creds["password"], rows["password"], (err, result) => {
+                bcrypt.compare(creds["password"], rows["password"], 
+                (err, result) => {
                     result ? res(rows) : res(false);
                 });
             })
             .catch(err => {
                 rej(err)
+            });
+        });
+    };
+
+    getUser(uid) {
+        return new Promise((res, rej) => {
+            this.getUsername(uid)
+            .then(uName => {
+                if (uName) return this.exec_query(QgetUser,
+                [uName])
+                return false
+            }).then(res)
+            .catch(err => {
+                rej(err);
             });
         });
     };
@@ -184,10 +218,7 @@ class Database {
             .then(uExist => {
                 if(!uExist) {
                     bcrypt.hash(creds["password"], 12, (err, passwdHash) => {
-                        this.exec_query(`INSERT INTO User 
-                        (username, password, email, msgs_sent_today, 
-                        msgs_sent_total, rooms_joined_total) 
-                        VALUES (?, ?, ?, 0, 0, 0)`,
+                        this.exec_query(QaddUser,
                         [creds["username"], passwdHash, creds["email"]])
                         .then(rows => {
                             res(true);
