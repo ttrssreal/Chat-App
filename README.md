@@ -1,5 +1,4 @@
-Chat-App is a school project written in Nodejs
-It uses Express and EJS
+Chat-App is a school project written in Nodejs. It uses Express and EJS for the backend and templating language respectively.
 
 You can also build an image and run it in a docker container for fun if you want.
 
@@ -8,4 +7,4 @@ You can also build an image and run it in a docker container for fun if you want
 2. run `git clone https://github.com/ttrssreal/Chat-App`
 3. run `cd Chat-App`
 4. run `npm install` to get dependencies
-5. finnally run `node app.js`
+5. finally run `node app.js`
