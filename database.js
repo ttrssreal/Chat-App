@@ -1,6 +1,8 @@
 const sqlite3 = require("sqlite3").verbose();
+// the crypto library
 const bcrypt = require("bcrypt");
 
+// Useful sql queries
 const 
     QusernameExist = "SELECT uid FROM User WHERE username=?",
     QemailExist = "SELECT uid FROM User WHERE email=?",
@@ -9,14 +11,12 @@ const
     QgetUser = "SELECT * FROM User WHERE username=?",
     QaddUser = "INSERT INTO User (username, password, email, msgs_sent_today, msgs_sent_total, rooms_joined_total) VALUES (?, ?, ?, 0, 0, 0)"
 
-
-
-// make queries in varibales up here ^
+// A class for interacting with the database
 class Database {
     constructor(dbRelLoc) {
         this.dbLnk = new sqlite3.Database(dbRelLoc);
     }
-    
+
     exec_query(query, params) {
         return new Promise((res, rej) => {
             this.dbLnk.get(query, params ? params : [],
@@ -32,9 +32,7 @@ class Database {
             [username])
             .then(rows => {
                 rows ? res(true) : res(false);
-            }).catch(err => {
-                rej(err);
-            });
+            }).catch(err => { rej(err); });
         });
     };
     
@@ -44,9 +42,7 @@ class Database {
             [email])
             .then(rows => {
                 rows ? res(true) : res(false);
-            }).catch(err => {
-                rej(err);
-            });
+            }).catch(err => { rej(err); });
         });
     };
     
@@ -55,15 +51,14 @@ class Database {
     };
     
     getInfo(table, selector, value, ...info) {
+        // Makes a promise for each query and executes them asynchronously
         return Promise.all(info.map(nameOfFeild => {
             return new Promise((res, rej) => {
                 this.exec_query("SELECT ? FROM ? WHERE ?=?",
                 [nameOfFeild, table, selector, value])
                 .then(rows => {
                     res(rows);
-                }).catch(err => {
-                    rej(err);
-                });
+                }).catch(err => { rej(err); });
             });
         }));
     };
@@ -74,70 +69,26 @@ class Database {
             [roomId])
             .then(rows => {
                 res(rows);
-            }).catch(err => {
-                rej(err);
-            });
+            }).catch(err => { rej(err); });
         });
     };
     
     getRoomCurrUsers(roomId) {
         return new Promise((res, rej) => {
-            this.exec_query("SELECT uid FROM User WHERE current_rid = ?",
-            [roomId])
-            .then(rows => {
-                res(rows);
-            }).catch(err => {
-                rej(err);
-            });
-        });
-    };
-    
-    addUserTooRoom(roomId, username) {
-        return new Promise((res, rej) => {
-            this.exec_query("UPDATE User SET current_rid=? WHERE uid = (SELECT uid FROM User WHERE username=?);",
-            [roomId, username])
-            .then(() => {
-                res();
+            this.dbLnk.all("SELECT uid FROM User WHERE current_rid = ?;",
+            [roomId], (err, rows) => {
+                err ? rej(err) : res(rows)
             })
-            .catch(err => {
-                rej(err);
-            });
         });
     };
     
-    removeUserFromRoom(username) {
+    addUserTooRoom(roomId, uid) {
         return new Promise((res, rej) => {
-            this.exec_query("UPDATE User SET current_rid = NULL WHERE uid = (SELECT uid FROM User WHERE username=?)",
-            [username])
+            this.exec_query("UPDATE User SET current_rid=? WHERE uid=?;",
+            [roomId, uid])
             .then(() => {
-                res();
-            }).catch(err => {
-                rej(err);
-            });
-        });
-    };
-    
-    getUsersCurrRoom(username) {
-        return new Promise((res, rej) => {
-            this.exec_query("SELECT current_rid FROM User WHERE uid = (SELECT uid FROM User WHERE username=?)",
-            [username])
-            .then(rows => {
-                res(rows);
-            }).catch(err => {
-                rej(err);
-            });
-        });
-    };
-    
-    setUsersCurrRoom(roomId, username) {
-        return new Promise((res, rej) => {
-            this.exec_query("UPDATE User SET current_rid=? WHERE uid = (SELECT uid FROM User WHERE username=?)",
-            [roomId, username])
-            .then(rows => {
-                res(rows);
-            }).catch(err => {
-                rej(err);
-            });
+                res(roomId);
+            }).catch(err => { rej(err); });
         });
     };
     
@@ -147,54 +98,55 @@ class Database {
             [uid])
             .then(rows => {
                 rows ? res(rows["username"]) : res(false)
-            }).catch(err => {
-                rej(err);
-            });
+            }).catch(err => { rej(err); });
         });
     };
     
     databaseCredsFormatValid(creds) {
+        // Regex for format validation
         let regexUsername = /^[a-zA-z\d]{4,}$/i;
         let regexPassword = /^(?=.*\d)[a-zA-z\d]{8,}/;
-        let regexEmail = /[\w/d!#$%&'*+-/=?^`{|}~]+@[a-z\d\-]+.[a-z\d\-]+.[a-z\d\-]+/;
+        let regexEmail = /^[\w\d!#$%&'*+-\/=?^`{|}~]+@[a-z\d\-]+.[a-z\d\-]+.[a-z\d\-]+$/;
+        // An object to store what passed and didn't
         var valid = {
             username: false,
             password: false,
             email: false
         }
-        if (creds) {
-            if (regexUsername.test(creds["username"]))
-                valid["username"] = true;
-            if (regexPassword.test(creds["password"])) 
-                valid["password"] = true;
-            if (regexEmail.test(creds["email"])) 
-                valid["email"] = true;
-            if (valid["username"] && valid["password"] && valid["email"])
-                return true;
-            else
-                return valid;
-        }
-        return false
+        // Null check
+        if (!creds) return false
+
+        // Either returns all true or partially true
+        if (regexUsername.test(creds["username"]))
+            valid["username"] = true;
+        if (regexPassword.test(creds["password"])) 
+            valid["password"] = true;
+        if (regexEmail.test(creds["email"])) 
+            valid["email"] = true;
+        if (valid["username"] && valid["password"] && valid["email"])
+            return true;
+        else
+            return valid;
     };
     
     databaseCredsCorrect(creds) {
         return new Promise((res, rej) => {
+            // usernameExist
             this.usernameExist(creds["username"])
             .then(result => {
                 if (result)
+                    // getUser
                     return this.exec_query(QgetUser,
                     [creds["username"]])
                 res(false);
             })
             .then(rows => {
+                // Hashes arg1 and compares with arg2
                 bcrypt.compare(creds["password"], rows["password"], 
                 (err, result) => {
                     result ? res(rows) : res(false);
                 });
-            })
-            .catch(err => {
-                rej(err)
-            });
+            }).catch(err => { rej(err); });
         });
     };
 
@@ -205,33 +157,31 @@ class Database {
                 if (uName) return this.exec_query(QgetUser,
                 [uName])
                 return false
-            }).then(res)
-            .catch(err => {
-                rej(err);
-            });
+            }).then(res).catch(err => { rej(err); });
         });
     };
     
     addUser(creds) {
         return new Promise((res, rej) => {
+            // usernameExist
             this.usernameExist(creds["username"])
             .then(uExist => {
+                // Username dosen't exist
                 if(!uExist) {
+                    // Performs a hash with 12 rounds on the password
                     bcrypt.hash(creds["password"], 12, (err, passwdHash) => {
+                        // Inserts the hash and email into the database
                         this.exec_query(QaddUser,
                         [creds["username"], passwdHash, creds["email"]])
                         .then(rows => {
                             res(true);
-                        }).catch(err => {
-                            rej(err);
-                        });
+                        }).catch(err => { rej(err); });
                     });
                 }
-            }).catch(err => {
-                rej(err);
-            });
+            }).catch(err => { rej(err); });
         });
     };
 };
 
+// Export the class
 module.exports = Database;

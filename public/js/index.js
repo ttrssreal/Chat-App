@@ -25,7 +25,7 @@ $(document).ready(() => {
     
     let regexUsername = /^[a-zA-z\d]{4,}$/i;
     let regexPassword = /^(?=.*\d)[a-zA-z\d]{8,}/;
-    let regexEmail = /^[\w/d!#$%&'*+-/=?^`{|}~]+@[a-z\d\-]+.[a-z\d\-]+.[a-z\d\-]+$/;
+    let regexEmail = /^[\w\d!#$%&'*+-\/=?^`{|}~]+@[a-z\d\-]+.[a-z\d\-]+.[a-z\d\-]+$/;
 
     $("#username").on("input change", () => {
         stopedTypingTimerUsr = 0;

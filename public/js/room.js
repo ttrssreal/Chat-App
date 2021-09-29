@@ -1,44 +1,64 @@
 const sockio = io();
 
-function sendMessage() {
-  socketio.emit("message", {
-    message: $(".message_to_send").val(),
-  });
-  $(".message_to_send").val("");
-}
+var local_users = [];
+var selfUsername;
 
-function updateUsers(usersInRoom) {
+function updateUsers(users) {
   $(".currentUserList ul").html("");
-  for (let userIndex = 0; userIndex < usersInRoom.length; userIndex++) {
-    const user = usersInRoom[userIndex];
+  for (let userIndex = 0; userIndex < users.length; userIndex++) {
+    const user = users[userIndex];
     $(".currentUserList ul").append("<li>" + user + "</li>");
   }
 }
 
+function addUser(username) {
+  local_users.push(username);
+  updateUsers(local_users);
+}
+
+function removeUser(username) {
+  local_users = local_users.filter((value, index, arr) => {
+    return value != username;
+  });
+  updateUsers(local_users);
+}
+
+function addMessage(data) {
+  $(".messages ul").append("<li>" + data.message + "</li>");
+  $(".messages").scrollTop($(".messages").prop("scrollHeight"));
+}
+
+function sendMessage() {
+  let message = $(".message_to_send").val()
+  sockio.emit("message", { message });
+  $(".message_to_send").val("");
+  addMessage({ message: selfUsername + ": " + message });
+}
+
+sockio.on("usernames", usernames => {
+  usernames.forEach(username => {
+    addUser(username);
+  });
+});
+
+sockio.on("username", username => {
+  selfUsername = username;
+});
+
+sockio.on("message", data => {
+  addMessage(data);
+});
+
+sockio.on("user_joined", data => {
+  addUser(data);
+});
+
+sockio.on("user_left", data => {
+  removeUser(data);
+});
+
 $(document).ready(() => {
-
-  sockio.on("update_users", data => {
-    updateUsers(data);
-  });
-
-  sockio.on("message", data => {
-    $(".messages ul").append("<li>" + data.message + "</li>");
-    $(".messages").scrollTop($(".messages").prop("scrollHeight"));
-  });
-
-  // sockio.on("new_user", data => {
-  //   usersInRoom.push(data);
-  //   updateUsers(usersInRoom);
-  // });
-
-  // sockio.on("user_left", data => {
-  //   usersInRoom = usersInRoom.filter((value, index, arr) => {
-  //     return value != data;
-  //   });
-  //   updateUsers(usersInRoom);
-  // });
-
   $(".btn").click(() => {
-
+    sendMessage();
   });
 });

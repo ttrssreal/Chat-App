@@ -20,38 +20,50 @@
       <div class="messages">
         <div class="left-side">
           <div class="create-account">
-            <form class="form-create-account">
-              <div class="username">
-                <div class="username-labl-err">
-                  <label for="username">Username:</label>
+            <div class="create-account-container">
+              <h2>Register</h2>
+              <form class="form-create-account">
+                <div class="username">
+                  <div class="username-labl-err">
+                    <label for="username">Username:</label>
+                  </div>
+                  <input type="text" autocomplete="off" name="username" id="username">
                 </div>
-                <input type="text" autocomplete="off" name="username" id="username">
-              </div>
 
-              <div class="email">
-                <div class="email-labl-err">
-                  <label for="email">Email:</label>
+                <div class="email">
+                  <div class="email-labl-err">
+                    <label for="email">Email:</label>
+                  </div>
+                  <input type="text" autocomplete="off" name="email" id="email">
                 </div>
-                <input type="text" autocomplete="off" name="email" id="email">
-              </div>
 
-              <div class="password">
-                <div class="password-labl-err">
-                  <label for="password">Password:</label>
+                <div class="password">
+                  <div class="password-labl-err">
+                    <label for="password">Password:</label>
+                  </div>
+                  <input type="password" autocomplete="off" name="password" id="password">
                 </div>
-                <input type="password" autocomplete="off" name="password" id="password">
-              </div>
 
-              <button type="submit" class="btn">Submit</button>
-            </form>
-            <div class="reqs">
-              <div>Username: 5-30<br>Password: 8 <=, and at least one number.</div>
+                <button type="submit" class="btn">Submit</button>
+              </form>
+              <div class="reqs">
+                <div>Username: 5-30<br>Password: 8 <=, and at least one number.</div>
+              </div>
             </div>
           </div>
           
         </div>
         <div class="right-side">
-          <div class="info"></div>
+          <div class="info">
+            <div>
+              <h2>What is it?</h2>
+              <p>
+                Chat app is a webapp that lets you message other users in different rooms. 
+                Each room has a main feed where messages are shown, a text area where messages can be written and a send button. 
+                On the left, you can create an account, login, and join a room.
+              </p>
+            </div>
+          </div>
           <div class="enter-anonymous"></div>
         </div>
       </div>

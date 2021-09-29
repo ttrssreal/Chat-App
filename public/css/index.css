@@ -121,3 +121,28 @@
 .password-labl-err p {
   margin-bottom: 0px;
 }
+
+.create-account-container {
+  padding: 70px 0;
+}
+
+.create-account-container h2 {
+  color: cadetblue;
+}
+
+.info {
+  width: 80%;
+}
+
+.info p {
+  color: cadetblue;
+}
+
+.info h2 {
+  color: cadetblue;
+}
+
+.info div {
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
