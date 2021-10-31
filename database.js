@@ -2,6 +2,11 @@ const sqlite3 = require("sqlite3").verbose();
 // the crypto library
 const bcrypt = require("bcrypt");
 
+//.env setup
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+
 // Useful sql queries
 const 
     QusernameExist = "SELECT uid FROM User WHERE username=?",
@@ -9,7 +14,10 @@ const
     QgetUsername = "SELECT username FROM User WHERE uid=?",
     QgetHash = "SELECT password FROM User WHERE username=?",
     QgetUser = "SELECT * FROM User WHERE username=?",
-    QaddUser = "INSERT INTO User (username, password, email, msgs_sent_today, msgs_sent_total, rooms_joined_total) VALUES (?, ?, ?, 0, 0, 0)"
+    QaddUser = "INSERT INTO User (username, password, email, msgs_sent_total, rooms_joined_total) VALUES (?, ?, ?, 0, 0)",
+    QgetFavRoomId = "SELECT rid FROM User INNER JOIN FavouriteRoom ON User.uid = FavouriteRoom.uid WHERE User.uid=?",
+    QinsertFavourite = "INSERT OR IGNORE INTO FavouriteRoom (uid, rid) VALUES (?, ?)",
+    QupdateFavourite = "UPDATE FavouriteRoom SET rid=? WHERE uid=?"
 
 // A class for interacting with the database
 class Database {
@@ -32,7 +40,7 @@ class Database {
             [username])
             .then(rows => {
                 rows ? res(true) : res(false);
-            }).catch(err => { rej(err); });
+            }).catch(err => rej(err) );
         });
     };
     
@@ -42,7 +50,7 @@ class Database {
             [email])
             .then(rows => {
                 rows ? res(true) : res(false);
-            }).catch(err => { rej(err); });
+            }).catch(err => rej(err) );
         });
     };
     
@@ -58,7 +66,7 @@ class Database {
                 [nameOfFeild, table, selector, value])
                 .then(rows => {
                     res(rows);
-                }).catch(err => { rej(err); });
+                }).catch(err => rej(err) );
             });
         }));
     };
@@ -69,7 +77,15 @@ class Database {
             [roomId])
             .then(rows => {
                 res(rows);
-            }).catch(err => { rej(err); });
+            }).catch(err => rej(err) );
+        });
+    };
+
+    getRooms() {
+        return new Promise((res, rej) => {
+            this.dbLnk.all("SELECT * FROM Room", async (err, rooms) => {
+                res(rooms);
+            })
         });
     };
     
@@ -88,17 +104,57 @@ class Database {
             [roomId, uid])
             .then(() => {
                 res(roomId);
-            }).catch(err => { rej(err); });
+            }).catch(err => rej(err) );
+        });
+    };
+
+    getFavRoomId(uid) {
+        return new Promise((res, rej) => {
+            this.exec_query(QgetFavRoomId, [uid])
+            .then(rows => {
+                rows ? res(rows) : res(false);
+            }).catch(err => rej(err) );
+        });
+    };
+
+    setFavRoomId(uid, roomId) {
+        return new Promise((res, rej) => {
+            this.getFavRoomId(roomId)
+            .then(rid => {
+                if (!rid) {
+                    this.exec_query(QinsertFavourite, [uid, roomId]).then(res);
+                }
+                return;
+            })
+            .then(this.exec_query(QupdateFavourite, [roomId, uid]))
+            .catch(err => rej(err) );
+        });
+    };
+    
+    incrementMsgsSent(uid) {
+        return new Promise((res, rej) => {
+            this.exec_query("UPDATE User SET msgs_sent_total = msgs_sent_total + 1 WHERE uid=?", [uid]
+            ).then(() => {
+                res(true);
+            }).catch(() => rej(err) )
+        });
+    };
+
+    incrementRmsJnd(uid) {
+        return new Promise((res, rej) => {
+            this.exec_query("UPDATE User SET rooms_joined_total = rooms_joined_total + 1 WHERE uid=?", [uid]
+            ).then(() => {
+                res(true);
+            }).catch(() => rej(err) )
         });
     };
     
     getUsername(uid) {
         return new Promise((res, rej) => {
-            this.exec_query(QgetUsername,
-            [uid])
+            this.exec_query(QgetUsername, [uid])
             .then(rows => {
                 rows ? res(rows["username"]) : res(false)
-            }).catch(err => { rej(err); });
+            }).catch(err => rej(err) );
         });
     };
     
@@ -146,7 +202,7 @@ class Database {
                 (err, result) => {
                     result ? res(rows) : res(false);
                 });
-            }).catch(err => { rej(err); });
+            }).catch(err => rej(err) );
         });
     };
 
@@ -157,7 +213,7 @@ class Database {
                 if (uName) return this.exec_query(QgetUser,
                 [uName])
                 return false
-            }).then(res).catch(err => { rej(err); });
+            }).then(res).catch(err => rej(err) );
         });
     };
     
@@ -175,13 +231,15 @@ class Database {
                         [creds["username"], passwdHash, creds["email"]])
                         .then(rows => {
                             res(true);
-                        }).catch(err => { rej(err); });
+                        }).catch(err => rej(err) );
                     });
                 }
-            }).catch(err => { rej(err); });
+            }).catch(err => rej(err) );
         });
     };
 };
 
+const dbConn = new Database(process.env.DBLOCATION)
+
 // Export the class
-module.exports = Database;
+module.exports = dbConn;

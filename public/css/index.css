@@ -1,20 +1,3 @@
-.main-container {
-  display: flex;
-  flex-direction: column;
-  width: 1300px;
-  margin: 30px auto 0 auto;
-}
-
-.page-header {
-  background-color: #212529;
-  float: left;
-  border: 1px solid;
-  height: 100px;
-  width: 100%;
-  text-align: center;
-  border-radius: 10px 10px 0px 0px;
-}
-
 .messages {
   background-color: #212529;
   float: left;
@@ -23,13 +6,6 @@
   border-radius: 0px 0px 10px 10px;
   display: flex;
   justify-content: space-evenly;
-}
-
-.page-header h1 {
-  text-align: center;
-  font-size: 60px;
-  color: cadetblue;
-  font-family: 'Roboto', sans-serif;
 }
 
 .left-side {
@@ -92,7 +68,6 @@
   height: 50%;
 }
 
-
 .username-labl-err {
   display: flex;
   flex-direction: column;
@@ -111,7 +86,6 @@
 .email-labl-err p {
   margin-bottom: 0px;
 }
-
 
 .password-labl-err {
   display: flex;

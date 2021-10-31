@@ -6,23 +6,57 @@
     <link rel="stylesheet" href="/public/lib/css/bootstrap.min.css" />
     <script src="/public/lib/js/bootstrap.min.js"></script>
     <script src="/public/lib/js/jquery-3.6.0.min.js"></script>
+    <script src="/public/js/user_dashboard.js"></script>
     <meta charset="UTF-8" />
     <title>Home</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs', { user: user ? user : null }) %>
+    <%- include('templates/rooms_heading.ejs', { user: user.renderingUser ? user.renderingUser : null }) %>
 
     <div class="main-container">
       <div class="page-header">
         <h1>Dashboard</h1>
+        <h4><a href="/user/<%= user.uid %>"><%= user.username %></a></h4>
       </div>
       <div class="messages">
         <div class="left-side">
-          <p>Username: <%= user.username %></p>
-          <p>Total Messages Sent Today: <%= user.msgs_sent_today %> </p>
-          <p>Total Messages Sent: <%= user.msgs_sent_total %> </p>
-          <br>
-          <p>Rooms Joined: <%= user.rooms_joined_total %> </p>
+          <table>
+            <tr>
+              <td><p>Username:</p></td>
+              <td><p><%= user.username %></p></td>
+            </tr>
+            <tr>
+              <td><p>Total Messages Sent:</p></td>
+              <td><p><%= user.msgs_sent_total %></p></td>
+            </tr>
+            <tr>
+              <td><p>Rooms Joined:</p></td>
+              <td><p><%= user.rooms_joined_total %></p></td>
+            </tr>
+            <tr>
+              <td><p>Favourite Room:</p></td>
+              <% if (user.favRoom) { %>
+                <td><p><%= user.favRoom.room_name %></p></td>
+              <% } else { %>
+                <td><p>None</p></td>
+              <% } %>
+            </tr>
+          </table>
+          
+          <div class="favouriteRoom">
+            
+            <% if (rooms) { %> 
+            <button class="btn openSetFavRoom btn-sm">Change</button>
+            <div class="setFavRoomContainer">
+              <button class="btn setFavRoomBtn">Set Favourite Room</button>
+              <select class="rid dropdown">
+                <% for(room in rooms) { %>
+                  <option value="<%= rooms[room].room_name %>"><%= rooms[room].room_name %></option>
+                <% } %>
+              </select>
+            </div>
+            <% } %> 
+          </div>
         </div>
         <div class="right-side"></div>
       </div>

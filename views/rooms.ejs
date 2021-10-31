@@ -2,24 +2,32 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="/public/css/styles.css" />
-    <link rel="stylesheet" href="/public/css/login.css" />
+    <link rel="stylesheet" href="/public/css/rooms.css" />
     <link rel="stylesheet" href="/public/lib/css/bootstrap.min.css" />
     <script src="/public/lib/js/bootstrap.min.js"></script>
     <script src="/public/lib/js/jquery-3.6.0.min.js"></script>
+    <script src="/public/js/rooms.js"></script>
     <meta charset="UTF-8" />
-    <title>Login</title>
-    <style>
-      h2 {
-        color: cadetblue;
-      }
-    </style>
+    <title>Home</title>
   </head>
   <body>
     <%- include('templates/rooms_heading.ejs', { user: user ? user : null }) %>
 
     <div class="main-container">
       <div class="page-header">
-        <h2>ERROR! Couldn't Find: <%= error %> </h2>
+        <h1>Rooms</h1>
+      </div>
+      <div class="messages">
+        <div class="left-side">
+          <table>
+            <% for (room in rooms) { %>
+              <tr>
+                <td><a href="/room?roomid=<%= rooms[room].rid %> "><p><%= rooms[room].room_name %></p></a></td>
+              </tr>
+            <% } %>  
+          </table>
+        </div>
+        <div class="right-side"></div>
       </div>
     </div>
   </body>

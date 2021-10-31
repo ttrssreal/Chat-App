@@ -23,22 +23,12 @@
   height: 100%
 }
 
-.left-side .btn {
-  margin-left: 20px;
-  margin-right: 20px;
-  background-color: #42617E;
-}
-
-.openSetFavRoom {
-  margin-bottom: 10px;
-}
-
 .page-header h4 {
   text-decoration: none;
   color: cadetblue;
 }
 
-.page-header h4 a {
+.left-side a {
   text-decoration: none;
   color: cadetblue;
 }

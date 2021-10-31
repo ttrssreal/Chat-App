@@ -9,7 +9,6 @@
   background-color: #212529;
   float: left;
   border: 1px solid;
-  height: 100px;
   width: 900px;
   text-align: center;
   border-radius: 10px 10px 0px 0px;
@@ -92,8 +91,19 @@
 .messages ul {
   float: left;
   list-style-type: none;
+  word-wrap: break-word;
+  width: 100%;
+}
+
+.currentUserList ul li a {
+  text-decoration: none;
+  color: cadetblue;
 }
 
 .messages ul li {
   color: cadetblue;
+}
+
+.pageHeader img {
+  width: 25px;
 }

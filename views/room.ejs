@@ -13,12 +13,15 @@
     <title>Document</title>
   </head>
   <body>
-    <%- include('templates/rooms_heading.ejs', { user }) %>
+    <%- include('templates/rooms_heading.ejs', { user: user ? user : null }) %>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/public/js/room.js"></script>
     <div class="main_container">
       <div class="pageHeader">
         <h1><%=room_name%></h1>
+        <% if (user.favourite) { %> 
+          <img src="/public/images/star.png"></img>
+        <% } %> 
       </div>
       <div class="currentUserList">
         <ul>
@@ -30,7 +33,7 @@
       </div>
       <div class="sendMessage">
         <textarea class="message_to_send" rows="0"></textarea>
-        <button class="btn">Send</button>
+        <button class="btn sendButton">Send</button>
       </div>
     </div>
   </body>

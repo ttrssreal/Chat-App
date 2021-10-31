@@ -10,8 +10,7 @@ if (process.env.NODE_ENV !== "production") {
 const port = process.env.PORT;
 
 //import database utils
-Database = require("./database.js");
-const db = new Database(process.env.DBLOCATION)
+const db = require("./database.js");
 
 // import
 const 
@@ -32,7 +31,7 @@ app.set('view engine', 'ejs');
 const store = new expressSession.MemoryStore();
 
 // setup socketio
-socketio = new (require("./socketio.js"))(server, db, process.env.SECRET, store);
+socketio = new (require("./socketio.js"))(server, store);
 
 //express middlewares
 app.use("/public", express.static('public'));
@@ -52,24 +51,12 @@ app.use(passport.session());
 // custom middleware
 app.use(Utils.updateUser(db));
 
+app.use("/user", require("./routes/user.js"));
+app.use("/room", require("./routes/rooms.js"));
+
 // regester "root" route handler
 app.get('/', (req, res) => {
     res.render("index.ejs", { user: req.isAuthenticated() ? req.user : null });
-});
-
-// Register room route handler
-app.get('/room', Utils.isAuth, (req, res) => {
-    db.addUserTooRoom(req.query.roomid, req.user.uid)
-    .then(rid => {
-        // getRoomName
-        return db.getRoomName(rid);
-    }).then(rName => {
-        res.render("room.ejs", {
-            // req.user exists because route uses Utils.isAuth
-            user: req.user,
-            room_name: rName.room_name,
-        });
-    }).catch(err => { console.log(err) })
 });
 
 // Register signup route handler
@@ -87,24 +74,40 @@ app.post('/signup', (req, res) => {
     db.usernameExist(req.body["username"])
     .then(uExist => {
         if (uExist)
-            res.json({ succ: false, message: "Username already exists."  })
+            res.json({ success: false, message: "Username already exists."  })
         else
             // emailExist
             return db.emailExist(req.body["email"]);
     })
     .then((eExist) => {
         if (eExist)
-            res.json({ succ: false, message: "Email already exists."  })
+            res.json({ success: false, message: "Email already exists."  })
         else
             // addUser
             return db.addUser(req.body);
     })
     .then(() => {
-        if(!res.headersSent) res.json({ succ: true, message: "Success!"});
+        if(!res.headersSent) res.json({ success: true, message: "Success!"});
     })
     .catch(err => {
         console.log(err);
     });
+});
+
+app.post('/favourite', Utils.isAuth, (req, res) => {
+    db.dbLnk.all("SELECT room_name, rid FROM Room", async (err, rooms) => {
+        for (let i = 0; i < rooms.length; i++) {
+            let room = rooms[i];
+            if (room.room_name == req.body.rName) {
+                let rid = room.rid;
+                await db.setFavRoomId(req.user.uid, rid)
+                res.json({ success: true });
+            }
+        }
+        if (!res.headersSent) {
+            res.json({ success: false });
+        }
+    })
 });
 
 // Register login route handler
@@ -127,10 +130,19 @@ app.get('/logout', (req, res) => {
 
 // Register dashboard route handler
 app.get('/dashboard', Utils.isAuth, (req, res) => {
-    res.render("user_dashboard.ejs", { user: req.user });
+    db.getFavRoomId(req.user.uid).then(rid => { return db.getRoomName(rid.rid) })
+    .then(roomName => {
+        req.user.favRoom = roomName
+        req.user.renderingUser = req.user
+        return db.dbLnk.all("SELECT room_name FROM Room", (err, rooms) => {
+            res.render("user_dashboard.ejs", { user: req.user, rooms });
+        })
+    })
 });
 
+app.use(Utils.notFound)
+
 // accept connections on loopback port "port"
-server.listen(port, () => {
+server.listen(port, "0.0.0.0", () => {
     console.log("Visit http://127.0.0.1:" + port.toString() + " in your browser to view the app.");
 });

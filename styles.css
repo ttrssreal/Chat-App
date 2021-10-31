@@ -25,6 +25,7 @@ body {
   background-color: #212529;
   float: left;
   border: 1px solid;
+  height: 100px;
   width: 100%;
   text-align: center;
   border-radius: 10px 10px 0px 0px;

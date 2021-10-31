@@ -19,6 +19,11 @@ class Utils {
             else next();
         }
     }
+
+    notFound(req, res, next) {
+        res.status(404).render("error.ejs", { user: req.user, error: req.originalUrl });
+        if (next) next();
+    }
 }
 
 // Export Utill class
