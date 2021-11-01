@@ -237,7 +237,7 @@ class Database {
             }).catch(err => rej(err) );
         });
     };
-};
+}; // Database
 
 const dbConn = new Database(process.env.DBLOCATION)
 

@@ -4,6 +4,8 @@ Utils = new (require("../utils.js"))();
 
 // Register room route handler
 router.get('/', Utils.isAuth, (req, res) => {
+    // check for if there is a parameter supplied
+    if (Object.entries(req.query).length == 0) { Utils.notFound(req, res); return; }
     db.addUserTooRoom(req.query.roomid, req.user.uid)
     .then(async rid => {
         if ((await db.getFavRoomId(req.user.uid)).rid == rid) {
@@ -12,6 +14,8 @@ router.get('/', Utils.isAuth, (req, res) => {
         // getRoomName
         return db.getRoomName(rid);
     }).then(rName => {
+        // check for if the room exists
+        if (!rName) { Utils.notFound(req, res); return; }
         res.render("room.ejs", {
             // req.user exists because route uses Utils.isAuth
             user: req.user,

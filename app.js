@@ -94,6 +94,7 @@ app.post('/signup', (req, res) => {
     });
 });
 
+// endpoint to set a favourite room
 app.post('/favourite', Utils.isAuth, (req, res) => {
     db.dbLnk.all("SELECT room_name, rid FROM Room", async (err, rooms) => {
         for (let i = 0; i < rooms.length; i++) {

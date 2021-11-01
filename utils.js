@@ -20,11 +20,13 @@ class Utils {
         }
     }
 
-    notFound(req, res, next) {
+    // 404 function.
+    notFound(req, res, next) {                                     // this bit is all url encoded
         res.status(404).render("error.ejs", { user: req.user, error: req.originalUrl });
+        // can be called as a regular function
         if (next) next();
     }
-}
+} // Utils
 
 // Export Utill class
 module.exports = Utils;

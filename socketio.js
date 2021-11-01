@@ -19,6 +19,7 @@ class SocketIOHelper {
         
         this.store = store;
         this.secret = process.env.SECRET;
+        // get the common database connection
         this.db = require("./database.js");
         this.io = socketio(server);
         this.io.use(this.getUserFromStore())
@@ -41,7 +42,7 @@ class SocketIOHelper {
                     return;
                 }
 
-                // Then with the uid, get the latest user object and prepere it to use
+                // Then with the uid, get the latest user object and prepare it to use
                 let uid = user.passport.user.uid;
                 this.db.getUser(uid)
                 .then(user => {
@@ -74,6 +75,7 @@ class SocketIOHelper {
                 let usernames = []
                 for (let i = 0; i < currUids.length; i++) {
                     const element = currUids[i];
+                    // add username and uid for each user
                     usernames.push({username: await this.db.getUsername(element.uid), uid: element.uid});
                 }
                 // Inform the client of the users
@@ -103,7 +105,7 @@ class SocketIOHelper {
     
         })
     }
-}
+} // SocketIOHelper
 
 // Export the SocketIOHelper class
 module.exports = SocketIOHelper;
