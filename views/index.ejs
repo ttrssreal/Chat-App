@@ -11,11 +11,13 @@
     <title>Home</title>
   </head>
   <body>
+    <!-- Include the navbar and pass in the rendering user -->
     <%- include('templates/rooms_heading.ejs', { user: user ? user : null }) %>
 
     <div class="main-container">
       <div class="page-header">
         <h1>Chat App</h1>
+        <p class="form-err"></p>
       </div>
       <div class="messages">
         <div class="left-side">
@@ -61,6 +63,13 @@
                 Chat app is a webapp that lets you message other users in different rooms. 
                 Each room has a main feed where messages are shown, a text area where messages can be written and a send button. 
                 On the left, you can create an account, login, and join a room.
+              </p>
+              <br>
+              <p>
+                Once logged in you can view your personal dashboard by clicking your username in the top right. 
+                You can also click the "More Rooms" button to enter topic based rooms.
+                When you are in a room, you can view the usernames of the people you are talking to,
+                to find out more about them click their name and you will be taken to their dashboard.
               </p>
             </div>
           </div>

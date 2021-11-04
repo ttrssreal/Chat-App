@@ -11,6 +11,7 @@
     <title>Home</title>
   </head>
   <body>
+    <!-- Include the navbar and pass in the rendering user -->
     <%- include('templates/rooms_heading.ejs', { user: user ? user : null }) %>
 
     <div class="main-container">
@@ -20,8 +21,10 @@
       <div class="messages">
         <div class="left-side">
           <table>
+            <!-- display all the rooms with links -->
             <% for (room in rooms) { %>
               <tr>
+                <!-- show the name and link -->
                 <td><a href="/room?roomid=<%= rooms[room].rid %> "><p><%= rooms[room].room_name %></p></a></td>
               </tr>
             <% } %>  

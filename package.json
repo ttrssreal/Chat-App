@@ -1,7 +1,7 @@
 {
   "name": "chat-app-nodejs",
   "version": "1.0.0",
-  "description": "chat app yeaa",
+  "description": "You can talk if you are lonley.",
   "main": "app.js",
   "scripts": {
     "test": "node app.js"
@@ -30,8 +30,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "socket.io": "^4.0.1",
-    "sqlite3": "^5.0.2",
-    "uuid": "^8.3.2"
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",

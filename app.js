@@ -67,7 +67,7 @@ app.get('/signup', (req, res) => {
 app.post('/signup', (req, res) => {
     // databaseCredsFormatValid
     if (db.databaseCredsFormatValid(req.body) != true) {
-        res.redirect('/');
+        res.json({ success: false, message: "Credentials format is incorrect"  })
         return;
     }
     // usernameExist
@@ -131,9 +131,12 @@ app.get('/logout', (req, res) => {
 
 // Register dashboard route handler
 app.get('/dashboard', Utils.isAuth, (req, res) => {
+    // get the user infomation
     db.getFavRoomId(req.user.uid).then(rid => { return db.getRoomName(rid.rid) })
     .then(roomName => {
+        // set favourite room
         req.user.favRoom = roomName
+        // render from req.users perspective
         req.user.renderingUser = req.user
         return db.dbLnk.all("SELECT room_name FROM Room", (err, rooms) => {
             res.render("user_dashboard.ejs", { user: req.user, rooms });

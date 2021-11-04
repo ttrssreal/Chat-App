@@ -13,15 +13,18 @@
     <title>Document</title>
   </head>
   <body>
+    <!-- Include the navbar and pass in the rendering user -->
     <%- include('templates/rooms_heading.ejs', { user: user ? user : null }) %>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/public/js/room.js"></script>
     <div class="main_container">
       <div class="pageHeader">
+        <!-- show the room name -->
         <h1><%=room_name%></h1>
+        <!-- if this is the favourite room display the star -->
         <% if (user.favourite) { %> 
           <img src="/public/images/star.png"></img>
-        <% } %> 
+        <% } %>
       </div>
       <div class="currentUserList">
         <ul>

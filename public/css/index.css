@@ -120,3 +120,7 @@
   padding-top: 70px;
   padding-bottom: 70px;
 }
+
+.form-err {
+  color:#dd403a;
+}

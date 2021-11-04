@@ -11,15 +11,18 @@
     <title>Home</title>
   </head>
   <body>
+    <!-- Include the navbar and pass in the rendering user -->
     <%- include('templates/rooms_heading.ejs', { user: user.renderingUser ? user.renderingUser : null }) %>
 
     <div class="main-container">
       <div class="page-header">
         <h1>Dashboard</h1>
+        <!-- add user and link -->
         <h4><a href="/user/<%= user.uid %>"><%= user.username %></a></h4>
       </div>
       <div class="messages">
         <div class="left-side">
+          <!-- user details -->
           <table>
             <tr>
               <td><p>Username:</p></td>
@@ -35,6 +38,7 @@
             </tr>
             <tr>
               <td><p>Favourite Room:</p></td>
+              <!-- if there is a favourite room, use it -->
               <% if (user.favRoom) { %>
                 <td><p><%= user.favRoom.room_name %></p></td>
               <% } else { %>
@@ -42,21 +46,22 @@
               <% } %>
             </tr>
           </table>
-          
+
+          <!-- module to select a favourite room. Turned off by setting rooms to false -->
+          <% if (rooms) { %> 
           <div class="favouriteRoom">
-            
-            <% if (rooms) { %> 
             <button class="btn openSetFavRoom btn-sm">Change</button>
             <div class="setFavRoomContainer">
               <button class="btn setFavRoomBtn">Set Favourite Room</button>
               <select class="rid dropdown">
+                <!-- iterate through rooms and add them as an option to the html select feild -->
                 <% for(room in rooms) { %>
                   <option value="<%= rooms[room].room_name %>"><%= rooms[room].room_name %></option>
                 <% } %>
               </select>
             </div>
-            <% } %> 
           </div>
+          <% } %> 
         </div>
         <div class="right-side"></div>
       </div>
