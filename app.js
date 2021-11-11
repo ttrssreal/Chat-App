@@ -54,6 +54,9 @@ app.use(Utils.updateUser(db));
 app.use("/user", require("./routes/user.js"));
 app.use("/room", require("./routes/rooms.js"));
 
+// reset all rooms after reboot
+(async () => await db.clearRooms())();
+
 // regester "root" route handler
 app.get('/', (req, res) => {
     res.render("index.ejs", { user: req.isAuthenticated() ? req.user : null });

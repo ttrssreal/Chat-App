@@ -117,6 +117,15 @@ class Database {
         });
     };
 
+    clearRooms() {
+        return new Promise((res, rej) => {
+            this.exec_query("UPDATE User SET current_rid=NULL;")
+            .then(rows => {
+                rows ? res(rows) : res(false);
+            }).catch(err => rej(err) );
+        });
+    };
+
     setFavRoomId(uid, roomId) {
         return new Promise((res, rej) => {
             this.getFavRoomId(roomId)

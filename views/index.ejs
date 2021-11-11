@@ -18,45 +18,50 @@
       <div class="page-header">
         <h1>Chat App</h1>
         <p class="form-err"></p>
+        <% if (user) { %>
+          <h6>Logged in as <%= user.username %>.</h6>
+         <% } %>
       </div>
       <div class="messages">
-        <div class="left-side">
-          <div class="create-account">
-            <div class="create-account-container">
-              <h2>Register</h2>
-              <form class="form-create-account">
-                <div class="username">
-                  <div class="username-labl-err">
-                    <label for="username">Username:</label>
+        <% if (!user) { %> 
+          <div class="left-side">
+            <div class="create-account">
+              <div class="create-account-container">
+                <h2>Register</h2>
+                <form class="form-create-account">
+                  <div class="username">
+                    <div class="username-labl-err">
+                      <label for="username">Username:</label>
+                    </div>
+                    <input type="text" autocomplete="off" name="username" id="username">
                   </div>
-                  <input type="text" autocomplete="off" name="username" id="username">
-                </div>
 
-                <div class="email">
-                  <div class="email-labl-err">
-                    <label for="email">Email:</label>
+                  <div class="email">
+                    <div class="email-labl-err">
+                      <label for="email">Email:</label>
+                    </div>
+                    <input type="text" autocomplete="off" name="email" id="email">
                   </div>
-                  <input type="text" autocomplete="off" name="email" id="email">
-                </div>
 
-                <div class="password">
-                  <div class="password-labl-err">
-                    <label for="password">Password:</label>
+                  <div class="password">
+                    <div class="password-labl-err">
+                      <label for="password">Password:</label>
+                    </div>
+                    <input type="password" autocomplete="off" name="password" id="password">
                   </div>
-                  <input type="password" autocomplete="off" name="password" id="password">
-                </div>
 
-                <button type="submit" class="btn">Submit</button>
-              </form>
-              <div class="reqs">
-                <div>Username: 4-30<br>Password: 8 <=, and at least one number.</div>
+                  <button type="submit" class="btn">Submit</button>
+                </form>
+                <div class="reqs">
+                  <div>Username: 4-30<br>Password: 8 <=, and at least one number.</div>
+                </div>
               </div>
             </div>
+            
           </div>
-          
-        </div>
+          <% } %>
         <div class="right-side">
-          <div class="info">
+          <div class="info" <% if (user) { %> <%= "style=width:100%" %>  <% } %> >
             <div>
               <h2>What is it?</h2>
               <p>

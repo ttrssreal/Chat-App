@@ -112,6 +112,10 @@
   color: cadetblue;
 }
 
+.info div {
+  text-align: center;
+}
+
 .info h2 {
   color: cadetblue;
 }
@@ -123,4 +127,8 @@
 
 .form-err {
   color:#dd403a;
+}
+
+.page-header h6 {
+  color: #24df36;
 }
