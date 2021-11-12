@@ -32,7 +32,7 @@ function removeUser(user) {
 
 function addMessage(data) {
   // add message
-  $(".messages ul").append("<li>" + data.message + "</li>");
+  $(".messages ul").append("<li>" + DOMPurify.sanitize(data.message) + "</li>");
   // scroll to the bottom of the screen
   $(".messages").scrollTop($(".messages").prop("scrollHeight"));
 }

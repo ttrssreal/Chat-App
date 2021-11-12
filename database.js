@@ -24,7 +24,12 @@ class Database {
     constructor(dbRelLoc) {
         this.dbLnk = new sqlite3.Database(dbRelLoc);
     }
-
+    
+    /*
+        This is a wrapper around the default sqlite3 get function.
+        query: sqlite query to execute
+        params: an array of parameters to be replaced
+    */
     exec_query(query, params) {
         return new Promise((res, rej) => {
             this.dbLnk.get(query, params ? params : [],
@@ -33,7 +38,13 @@ class Database {
             });
         });
     };
-    
+
+    /**
+     * Checks if the username exists.
+     * 
+     * @param {string} username 
+     * @returns {boolean}
+     */
     usernameExist(username) {
         return new Promise((res, rej) => {
             this.exec_query(QusernameExist,
@@ -43,7 +54,13 @@ class Database {
             }).catch(err => rej(err) );
         });
     };
-    
+
+    /**
+     * Checks if the email exists.
+     * 
+     * @param {string} email 
+     * @returns {boolean}
+     */
     emailExist(email) {
         return new Promise((res, rej) => {
             this.exec_query(QemailExist,
@@ -53,11 +70,25 @@ class Database {
             }).catch(err => rej(err) );
         });
     };
-    
+
+    /**
+     * Fufills many querys and returns all the resolutions.
+     * 
+     * @param {string} username 
+     * @returns {Array.<any>} rows
+     */
     getMultiple(...querys) {
         return Promise.all(querys.map(this.exec_query));
     };
-    
+
+    /**
+     * Gets the specified user infomation.
+     * 
+     * @param {string} table What table to get from.
+     * @param {string} selector What feild to look in.
+     * @param {string} value What value to look for.
+     * @returns {Array.<any>} The Infomation.
+     */
     getInfo(table, selector, value, ...info) {
         // Makes a promise for each query and executes them asynchronously
         return Promise.all(info.map(nameOfFeild => {
@@ -71,6 +102,12 @@ class Database {
         }));
     };
 
+    /**
+     * Gets a rooms name.
+     * 
+     * @param {int} roomId 
+     * @returns {Array.<string>} The room name.
+     */
     getRoomName(roomId) {
         return new Promise((res, rej) => {
             this.exec_query("SELECT room_name FROM Room WHERE rid=?",
@@ -81,6 +118,11 @@ class Database {
         });
     };
 
+    /**
+     * Returns all the rooms.
+     * 
+     * @returns {Array.<string>} rooms.
+     */
     getRooms() {
         return new Promise((res, rej) => {
             this.dbLnk.all("SELECT * FROM Room", async (err, rooms) => {
@@ -88,7 +130,13 @@ class Database {
             })
         });
     };
-    
+
+    /**
+     * Gets the users in a room.
+     * 
+     * @param {int} roomId 
+     * @returns {Array.<int>} uids.
+     */
     getRoomCurrUsers(roomId) {
         return new Promise((res, rej) => {
             this.dbLnk.all("SELECT uid FROM User WHERE current_rid = ?;",
@@ -97,7 +145,13 @@ class Database {
             })
         });
     };
-    
+
+    /**
+     * Adds uid to a room.
+     * 
+     * @param {int} roomId 
+     * @returns {Array.<int>} uids.
+     */
     addUserTooRoom(roomId, uid) {
         return new Promise((res, rej) => {
             this.exec_query("UPDATE User SET current_rid=? WHERE uid=?;",
@@ -108,6 +162,12 @@ class Database {
         });
     };
 
+    /**
+     * Gets the favourite room of a user.
+     * 
+     * @param {int} uid 
+     * @returns {Array.<int>|boolean} uids or false.
+     */
     getFavRoomId(uid) {
         return new Promise((res, rej) => {
             this.exec_query(QgetFavRoomId, [uid])
@@ -117,6 +177,11 @@ class Database {
         });
     };
 
+    /**
+     * Clears all the rooms of users.
+     * 
+     * @returns {Array.<int>|boolean} uids or false.
+     */
     clearRooms() {
         return new Promise((res, rej) => {
             this.exec_query("UPDATE User SET current_rid=NULL;")
@@ -126,6 +191,13 @@ class Database {
         });
     };
 
+    /**
+     * Sets the favourite room of a user.
+     * 
+     * @param {int} uid 
+     * @param {int} roomId
+     * @returns {Array.<int>} uids.
+     */
     setFavRoomId(uid, roomId) {
         return new Promise((res, rej) => {
             this.getFavRoomId(roomId)
@@ -139,7 +211,13 @@ class Database {
             .catch(err => rej(err) );
         });
     };
-    
+
+    /**
+     * Adds one to the number of messages sent by a user.
+     * 
+     * @param {int} uid 
+     * @returns {boolean} succeded?.
+     */
     incrementMsgsSent(uid) {
         return new Promise((res, rej) => {
             this.exec_query("UPDATE User SET msgs_sent_total = msgs_sent_total + 1 WHERE uid=?", [uid]
@@ -149,6 +227,12 @@ class Database {
         });
     };
 
+    /**
+     * Adds one to the number of rooms joined by a user.
+     * 
+     * @param {int} uid 
+     * @returns {boolean} succeded?.
+     */
     incrementRmsJnd(uid) {
         return new Promise((res, rej) => {
             this.exec_query("UPDATE User SET rooms_joined_total = rooms_joined_total + 1 WHERE uid=?", [uid]
@@ -157,7 +241,13 @@ class Database {
             }).catch(() => rej(err) )
         });
     };
-    
+
+    /**
+     * Gets a username from a uid.
+     * 
+     * @param {int} uid 
+     * @returns {string|boolean} username or failed.
+     */
     getUsername(uid) {
         return new Promise((res, rej) => {
             this.exec_query(QgetUsername, [uid])
@@ -166,7 +256,13 @@ class Database {
             }).catch(err => rej(err) );
         });
     };
-    
+
+    /**
+     * Check if the format of the credentials in correct.
+     * 
+     * @param {{username: string, password: string, email:string}} creds 
+     * @returns {{username: boolean, password: boolean, email:boolean}|boolean} specific faliure points of if they all failed then false.
+     */
     databaseCredsFormatValid(creds) {
         // Regex for format validation
         let regexUsername = /^[a-zA-z\d]{4,}$/i;
@@ -193,7 +289,13 @@ class Database {
         else
             return valid;
     };
-    
+
+    /**
+     * Checks if the credentials are acctually in the database and match.
+     * 
+     * @param {{username: string, password: string, email:string}} creds 
+     * @returns {{username: boolean, password: boolean, email:boolean}|boolean} specific faliure points of if they all failed then false.
+     */
     databaseCredsCorrect(creds) {
         return new Promise((res, rej) => {
             // usernameExist
@@ -215,6 +317,12 @@ class Database {
         });
     };
 
+    /**
+     * Check if the format of the credentials in correct.
+     * 
+     * @param {int} uid 
+     * @returns {{username: string, uid: string ...}|boolean} user jsobject or false.
+     */
     getUser(uid) {
         return new Promise((res, rej) => {
             this.getUsername(uid)
@@ -225,7 +333,13 @@ class Database {
             }).then(res).catch(err => rej(err) );
         });
     };
-    
+
+    /**
+     * Adds the user to the database.
+     * 
+     * @param {{username: string, password: string, email:string}} creds 
+     * @returns {boolean} success?
+     */
     addUser(creds) {
         return new Promise((res, rej) => {
             // usernameExist
@@ -248,7 +362,8 @@ class Database {
     };
 }; // Database
 
+// create a singleton (sort of)
 const dbConn = new Database(process.env.DBLOCATION)
 
-// Export the class
+// Export the object
 module.exports = dbConn;

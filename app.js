@@ -70,7 +70,7 @@ app.get('/signup', (req, res) => {
 app.post('/signup', (req, res) => {
     // databaseCredsFormatValid
     if (db.databaseCredsFormatValid(req.body) != true) {
-        res.json({ success: false, message: "Credentials format is incorrect"  })
+        res.json({ success: false, message: "Sorry, these credentials don't make sense!"  })
         return;
     }
     // usernameExist
